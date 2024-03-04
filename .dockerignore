@@ -1,0 +1,15 @@
+# Ignore everything
+**
+
+# Allow Go Module's dependencies
+!/go.mod
+!/go.sum
+
+# Allow all Go files
+!**/*.go
+
+# Allow Dockerfile
+!/Dockerfile
+
+# Allow static files
+!/static/**
