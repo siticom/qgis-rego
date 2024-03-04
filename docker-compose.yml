@@ -2,9 +2,8 @@ version: "3.8"
 
 services:
   qgis-repo:
-    container_name: qgis-rego
+    container_name: ghcr.io/siticom/qgis-rego:latest
     restart: on-failure
-    build: .
     volumes:
       - ./plugins:/plugins
     ports:
