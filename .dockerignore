@@ -10,3 +10,6 @@
 
 # Allow Dockerfile
 !/Dockerfile
+
+# Allow static files
+!/static/**
