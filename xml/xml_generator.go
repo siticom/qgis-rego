@@ -2,6 +2,7 @@ package xml
 
 import (
 	"archive/zip"
+	"context"
 	"encoding/xml"
 	"fmt"
 	"os"
@@ -18,8 +19,10 @@ const xmlHeader = `<?xml version = "1.0" encoding = "UTF-8"?><?xml-stylesheet ty
 
 var plugin_list model.PluginList
 
+type ServerUrlKey struct{}
+
 // Generates the XML output for the plugins found in the plugin directory
-func GenerateXML(queryQgisVersion version.Version) (string, error) {
+func GenerateXML(ctx context.Context, queryQgisVersion version.Version) (string, error) {
 	var filtered_plugin_list model.PluginList
 	for _, plugin := range plugin_list {
 		// Parse version information or set default values
@@ -35,6 +38,10 @@ func GenerateXML(queryQgisVersion version.Version) (string, error) {
 
 		// Compare queried version against plugin version, only add if plugin supports version
 		if queryQgisVersion.GreaterThanOrEqual(pluginMinQgisVersion) && queryQgisVersion.LessThanOrEqual(pluginMaxQgisVersion) {
+			server_url, ok := ctx.Value(ServerUrlKey{}).(string)
+			if ok {
+				plugin.SetDownloadUrl(server_url)
+			}
 			filtered_plugin_list = append(filtered_plugin_list, plugin)
 		}
 	}
@@ -93,7 +100,7 @@ func FindPlugins(dir string) (model.PluginList, error) {
 
 			// Get all metadata from the file
 			plugin := model.ParseMetadataToModel(metadataFile)
-			plugin.SetFileNameAndDownload(file.Name(), config.ServerURL)
+			plugin.SetFileName(file.Name())
 			if config.Env.ShowIcons {
 				plugin.SetImageBase64(archive)
 			}

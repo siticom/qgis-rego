@@ -78,9 +78,13 @@ func (p *Plugin) GenerateUniqueId() {
 	p.ID = int(crc32.ChecksumIEEE([]byte(key)))
 }
 
-func (p *Plugin) SetFileNameAndDownload(file_name string, server_url string) {
+func (p *Plugin) SetFileName(file_name string) {
 	p.FileName = file_name
-	p.DownloadURL = fmt.Sprintf("%s/plugins/%s", server_url, file_name)
+}
+
+func (p *Plugin) SetDownloadUrl(server_url string) {
+	p.DownloadURL = fmt.Sprintf("%s/plugins/%s", server_url, p.FileName)
+	log.Debug("Download URL: " + p.DownloadURL)
 }
 
 func (p *Plugin) SetImageBase64(zip_reader *zip.ReadCloser) {

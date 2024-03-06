@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"qgis-repository/config"
 	"qgis-repository/xml"
 	"strconv"
-	"sync"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/hashicorp/go-version"
@@ -81,11 +81,7 @@ func main() {
 		if r.TLS != nil {
 			scheme = "https"
 		}
-
-		sync.OnceFunc(func() {
-			// Set the server url based on the request
-			config.ServerURL = fmt.Sprintf("%s://%s", scheme, r.Host)
-		})
+		ctx := context.WithValue(r.Context(), xml.ServerUrlKey{}, fmt.Sprintf("%s://%s", scheme, r.Host))
 
 		// Check the qgis version from the request
 		qgisVersion, err := version.NewVersion(r.URL.Query().Get("qgis"))
@@ -93,7 +89,7 @@ func main() {
 			qgisVersion, _ = version.NewVersion(config.Env.MinimumQgisVersion)
 		}
 
-		pluginsXml, err := xml.GenerateXML(*qgisVersion)
+		pluginsXml, err := xml.GenerateXML(ctx, *qgisVersion)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
