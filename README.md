@@ -2,20 +2,13 @@
 
 This repository contains an implementation of a QGIS Plugin Repository using Go. Our goal is to provide a feature-rich and easy-to-deploy solution.
 
-## Prerequisites
+## Run with Docker Compose
 
-- Docker
-- docker-compose
-
-## Getting Started
-
-1. Clone the repository.
-2. Copy the `.env.example` file to `.env` and adjust the values to your needs.
-3. Run `docker-compose up -d` to start the repository.
-
-## Building
-
-The project uses a multi-stage Docker build. The `Dockerfile` first creates a build stage container where it downloads the dependencies and builds the Go application. Then it creates a release stage container where it copies the built application and the static files. The application listens on port 8080.
+```sh
+# run docker-compose
+docker-compose up -d
+# open on http://localhost:8080/plugins/plugins.xml
+```
 
 ## Configuration
 
@@ -28,7 +21,25 @@ Configuration for the application is handled by the `Configuration` struct in [c
 
 See [.env.example](.env.example) for an example configuration.
 
+## Development
+
+Requires [Go](https://go.dev/) to be installed.
+
+```sh
+# optional: copy env file
+cp .env.example .env
+
+# run program
+go run .
+# open on http://localhost:8080/plugins/plugins.xml
+
+# build
+go build
+# run binary with
+./qgis-repository
+```
+
 ## Similar Projects
 
 - [PHP variant of Michel Stuyts](https://gitlab.com/GIS-projects/phpQGISrepository)
-- [Official Django Plugin repository ](https://github.com/qgis/QGIS-Django/tree/master/qgis-app/plugins)
+- [Official Django Plugin repository](https://github.com/qgis/QGIS-Django/tree/master/qgis-app/plugins)
