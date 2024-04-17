@@ -4,6 +4,9 @@ services:
   qgis-repo:
     image: ghcr.io/siticom/qgis-rego:latest
     restart: on-failure
+    environment:
+      - MINIMUM_QGIS_VERSION=3.28
+      - DEBUG=false
     volumes:
       - ./plugins:/plugins
     ports:
